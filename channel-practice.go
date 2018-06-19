@@ -6,7 +6,7 @@ import (
         "time"
 )
 
-func hasher(i <-chan []byte, o chan<- [20]byte) {
+func hasher(i <-chan []byte, o chan<- [sha1.Size]byte) {
     for b := range i {
         o <- sha1.Sum(b)
         time.Sleep(100 * time.Millisecond)
@@ -25,7 +25,7 @@ func filler(c chan<- []byte) {
     close(c)
 }
 
-func printer(i <-chan [20]byte, d chan<- bool) {
+func printer(i <-chan [sha1.Size]byte, d chan<- bool) {
     for x := range i {
         fmt.Printf("%x\n", x)
     }
@@ -34,7 +34,7 @@ func printer(i <-chan [20]byte, d chan<- bool) {
 
 func main() {
     c := make(chan []byte)
-    b := make(chan [20]byte)
+    b := make(chan [sha1.Size]byte)
     go hasher(c, b)
     go filler(c)
 
