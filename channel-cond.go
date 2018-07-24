@@ -14,8 +14,7 @@ var cond *sync.Cond = sync.NewCond(&m)
 
 func hasher(i <-chan []byte, o chan<- [sha1.Size]byte) {
     for b := range i {
-        d := sha1.Sum(b)
-        o <- d
+        o <- sha1.Sum(b)
         cond.Signal()
     }
     close(o)
