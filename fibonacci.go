@@ -1,9 +1,7 @@
 /*
     calculate fibonacci numbers using memoization
 */
-package main
-
-import "fmt"
+package fibonacci
 
 // f_n = f_{n-1} + f_{n-2}
 func fib(n int) (int, func(int) int) {
@@ -23,12 +21,4 @@ func fib(n int) (int, func(int) int) {
             return f[x]
         }
     }
-}
-
-func main() {
-    n, f := fib(5)
-    fmt.Println(n)
-    fmt.Println(f)
-    fmt.Println(f(6))
-    fmt.Println(f(100000))
 }
