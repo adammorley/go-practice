@@ -8,21 +8,19 @@ package main
 import (
         "crypto/sha1"
         "fmt"
-        "time"
 )
 
 func hasher(i <-chan []byte, o chan<- [sha1.Size]byte, s chan<- bool) {
     for b := range i {
         o <- sha1.Sum(b)
         s <- true
-        time.Sleep(100 * time.Millisecond)
     }
     close(o)
 }
 
 func filler(c chan<- []byte, s <-chan bool) {
     b := make([]byte, 4, 4)
-    for i := 0; i < 10; i++ {
+    for i := 0; i < 100; i++ {
         if i > 0 { // allow filler to start
             <-s
         }
