@@ -1,5 +1,7 @@
 /*
 use something akin to 2PC to notify when the two goroutines should move forward (to prevent the overwrite problem described in channel-practice.go)
+
+avoiding the memory allocation for each for loop in filler leads to increased complexity; it's fairly wonky too (the sync channel has to be buffered to not cause a deadlock).
 */
 package main
 
