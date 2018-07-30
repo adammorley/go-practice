@@ -49,6 +49,9 @@ type coordinate struct {
     return nil
 }*/
 
+// iterate through the rooms in the floor plan and update the distances; guards stores the location of the guards
+// note that since this is a slice, the underlying data structure is modified; this is sub-optimal and would need to later be improved to ensure that the data is either locked (eg with a mutex) or a serialized version is passed to the function.
+// the room is treated as an x-y coordinate system; buildings must be rectangular; locked rooms not supported yet
 func analyzeAndScore(plan [][]int, guards map[coordinate]bool) error {
     var ySize int
     for x := 0; x < len(plan); x++ {
