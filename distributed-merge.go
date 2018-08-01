@@ -4,7 +4,6 @@
 */
 package main
 
-import "fmt"
 import "sort"
 
 type input struct {
