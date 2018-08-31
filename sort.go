@@ -2,6 +2,7 @@ package main
 
 import "container/list"
 import "fmt"
+import "math/rand"
 import "sort"
 
 /*func testMergeSort() {
@@ -19,7 +20,6 @@ func MergeSort(a []int) []int {
 	a = a[len(a)/2:]
 	return mergeSort(a, b)
 }
-
 func mergeSort(a, b []int) []int {
 	if len(a) == 1 && len(b) == 1 {
 		return merge(a, b)
@@ -67,7 +67,6 @@ func merge(a, b []int) []int {
 		}
 	}
 }
-
 func testMerge() {
 	var a1 []int = []int{3}
 	var b1 []int = []int{4}
@@ -78,7 +77,6 @@ func testMerge() {
 	var c0 []int = []int{2, 3, 4, 4, 12, 33, 38, 44, 53, 55}
 	compare(merge(a0, b0), c0)
 }
-
 func testMergeSort() {
 	var a []int = []int{33, 1283, 2, 387, 190, 37, 44, 230}
 	var b []int = []int{33, 1283, 2, 387, 190, 37, 44, 230, 55}
@@ -86,7 +84,6 @@ func testMergeSort() {
 	fmt.Println(MergeSort(b))
 	fmt.Println(MergeSort([]int{33, 190, 55}))
 }
-
 func compare(a, b []int) {
 	if len(a) != len(b) {
 		panic("wrong length")
@@ -113,7 +110,6 @@ func one() {
 	}
 	compare([]int{1, 2, 3, 5, 6, 7, 8, 9, 12, 33, 45, 99}, mergeOne(a, b))
 }
-
 func mergeOne(a, b []int) []int {
 	var i, j int
 	for {
@@ -131,7 +127,6 @@ func mergeOne(a, b []int) []int {
 	}
 	return a
 }
-
 func shiftRight(a []int, i int) []int {
 	for j := len(a) - 2; j >= i; j-- {
 		a[j+1] = a[j]
@@ -200,7 +195,6 @@ func four() {
 	v := 6
 	fmt.Println(fourSearch(a, v), v)
 }
-
 func fourSearch(a []int, v int) int {
 	i := 10
 	for {
@@ -224,7 +218,6 @@ func five() {
 	str = "dog"
 	fmt.Println(findString(str, strs, 0, len(strs)-1, false))
 }
-
 func findString(str string, strs []string, s, e int, up bool) int {
 	if str == "" {
 		panic("cannot search for empty string as it may be duplicated")
@@ -300,9 +293,80 @@ func eight() {
 	}
 }
 
+func nine() {
+	var matrix [][]int = createMatrix()
+    var s []int = []int{35, 63, 83, 126}
+    for i := range s {
+	    r, c := searchMatrix(s[i], matrix)
+        fmt.Printf("%v is located at %v, %v: %v\n", s[i], r, c, matrix[r][c])
+    }
+}
+func searchMatrix(v int, matrix [][]int) (int, int) {
+	m := len(matrix) / 2
+	r := searchRows(v, matrix, 0, m, len(matrix)-1)
+	m = len(matrix[r]) / 2
+	c := searchColumns(v, matrix[r], 0, m, len(matrix[r])-1)
+	return r, c
+}
+func searchRows(v int, matrix [][]int, s, m, e int) int {
+	if v > matrix[m][0] && v < matrix[m][len(matrix[m])-1] {
+		return m
+	} else if v < matrix[m][0] {
+		return searchRows(v, matrix, s, (m-s)/2+s, m)
+	} else if v > matrix[m][len(matrix[m])-1] {
+		return searchRows(v, matrix, m, (e-m)/2+m, e)
+	} else {
+		panic("foobar")
+	}
+}
+func searchColumns(v int, smatrix []int, s, m, e int) int {
+	if v == smatrix[m] {
+		return m
+	} else if v < smatrix[m] {
+		return searchColumns(v, smatrix, s, (m-s)/2+s, m)
+	} else if v > smatrix[m] {
+		return searchColumns(v, smatrix, m, (e-m)/2+m, e)
+	} else {
+		panic("foobar")
+	}
+}
+
+/*
+rs: 5, re: 10, rm: 7, cs: 4, ce: 8, cm: 6, m: 118
+rs: 5, re: 7, rm: 6, cs: 4, ce: 6, cm: 5, m: 108
+rs: 5, re: 6, rm: 5, cs: 4, ce: 5, cm: 4, m: 81*/
+// searching for v
+func binarySearchMatrix(v int, matrix [][]int, rs, cs, re, ce int) (int, int) {
+	var rm, cm int = (re-rs)/2 + rs, (ce-cs)/2 + cs
+	fmt.Printf("rs: %v, re: %v, rm: %v, cs: %v, ce: %v, cm: %v, m: %v\n", rs, re, rm, cs, ce, cm, matrix[rm][cm])
+	if matrix[rm][cm] == v {
+		return rm, cm
+	} else if matrix[rm][cm] < v {
+		return binarySearchMatrix(v, matrix, rm, cm, re, ce)
+	} else if matrix[rm][cm] > v {
+		return binarySearchMatrix(v, matrix, rs, cs, rm, cm)
+	} else {
+		panic("huh")
+	}
+}
+func createMatrix() [][]int {
+	var matrix [][]int = make([][]int, 10)
+	var n int
+	for i := 0; i < len(matrix); i++ {
+		matrix[i] = make([]int, 8)
+		for j := 0; j < len(matrix[i]); j++ {
+			n = n + rand.Intn(5)
+			matrix[i][j] = n
+		}
+	}
+	for i := 0; i < len(matrix); i++ {
+		fmt.Println(matrix[i])
+	}
+	return matrix
+}
+
 func main() {
 	fmt.Println("hello")
-	//testMergeSort()
 	testMerge()
 	testMergeSort()
 	useSearch()
@@ -313,4 +377,5 @@ func main() {
 	four()
 	five()
 	eight()
+	nine()
 }
