@@ -4,6 +4,7 @@
 */
 package main
 
+import "container/heap"
 import "sort"
 
 type input struct {

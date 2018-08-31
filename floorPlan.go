@@ -17,20 +17,20 @@ import "fmt"
 import "math"
 
 type coordinate struct {
-    x int
-    y int
+	x int
+	y int
 }
 
 /*
-    iterate through the 2-d int slice to find all the guard locations, and store them somewhere
-    iterate through entire array, push all elements onto a queue
-    pop elements off the queue and calcuate distance from any guard to the square
-    store the lowest value
-    return error if locked room through which guard cannot pass (implement later; mvp)
+   iterate through the 2-d int slice to find all the guard locations, and store them somewhere
+   iterate through entire array, push all elements onto a queue
+   pop elements off the queue and calcuate distance from any guard to the square
+   store the lowest value
+   return error if locked room through which guard cannot pass (implement later; mvp)
 
-    - need a calculate distance function to calculate the distance from one square to another square
+   - need a calculate distance function to calculate the distance from one square to another square
 
-    example of why having "special" rooms be notified separately is useful:
+   example of why having "special" rooms be notified separately is useful:
 */
 /*func analyzeAndScore(plan [][]int) error {
     guards := make(map[coordinate]bool)
@@ -53,32 +53,32 @@ type coordinate struct {
 // note that since this is a slice, the underlying data structure is modified; this is sub-optimal and would need to later be improved to ensure that the data is either locked (eg with a mutex) or a serialized version is passed to the function.
 // the room is treated as an x-y coordinate system; buildings must be rectangular; locked rooms not supported yet
 func analyzeAndScore(plan [][]int, guards map[coordinate]bool) error {
-    var ySize int
-    for x := 0; x < len(plan); x++ {
-        if ySize == 0 {
-            ySize = len(plan[x])
-        } else if len(plan[x]) != ySize {
-            return errors.New("room is not rectangular") // XXX move to type or support rectangular rooms
-        }
-        for y := 0; y < len(plan[x]); y++ {
-            var distance int = math.MaxInt32
-            for k, _ := range guards {
-                if x == k.x && y == y.x {
-                    // it's a guard
-                    distance = -1
-                    break
-                }
-                t := math.Abs(k.x - x) + math.Abs(k.y - y)
-                if t < distance {
-                    distance = t
-                }
-            }
-            plan[x][y] = distance
-        }
-    }
-    return nil
+	var ySize int
+	for x := 0; x < len(plan); x++ {
+		if ySize == 0 {
+			ySize = len(plan[x])
+		} else if len(plan[x]) != ySize {
+			return errors.New("room is not rectangular") // XXX move to type or support rectangular rooms
+		}
+		for y := 0; y < len(plan[x]); y++ {
+			var distance int = math.MaxInt32
+			for k, _ := range guards {
+				if x == k.x && y == y.x {
+					// it's a guard
+					distance = -1
+					break
+				}
+				t := math.Abs(k.x-x) + math.Abs(k.y-y)
+				if t < distance {
+					distance = t
+				}
+			}
+			plan[x][y] = distance
+		}
+	}
+	return nil
 }
 
 func main() {
-    // build some example cases, supply to function
+	// build some example cases, supply to function
 }
