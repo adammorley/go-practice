@@ -56,15 +56,20 @@ type pair struct {
 }
 
 // return the top ten words with length > n in a wordCount
-func (w wordCount) top10(n int) []pair {
+func (w wordCount) top(n, l int, logger *log.Logger) []pair {
 	var words []pair = make([]pair, 0, len(w)) // pre-allocate space
 	for k, v := range w {
-		if len(k) > n {
+		if len(k) > l {
 			words = append(words, pair{word: k, count: v})
 		}
 	}
 	sort.Slice(words, func(i, j int) bool { return words[i].count > words[j].count })
-	return words[0:10]
+	if len(words) < n {
+		logger.Print("fewer than ", n, " unique words, default to max available")
+		return words[0:len(words)]
+	} else {
+		return words[0:n]
+	}
 }
 
 // to parallelize, add scanning and top10() calculation equal to roughly the number of cores, modulo the disk
@@ -75,20 +80,22 @@ func (w wordCount) top10(n int) []pair {
 // parallelization is likely best done using goroutines
 func main() {
 	var logger *log.Logger = log.New(os.Stderr, "error: ", log.Ltime)
-	filename := flag.String("filename", "", "the filename to process")
+	fopt := "filename"
+	filename := flag.String(fopt, "", "the filename to process")
 	wordLength := flag.Int("length", 5, "the word length to calculate the top 10 words for")
+	topN := flag.Int("top", 10, "the top N words")
 	flag.Parse()
 	if _, err := os.Stat(*filename); err != nil {
-		logger.Fatal("could not find file, please specify as the filename option")
+		logger.Fatal("could not find file, please specify as the ", fopt, " option")
 	}
 	f, err := os.Open(*filename)
 	if err != nil {
-		log.Fatal("could not open book")
+		logger.Fatal("could not open book")
 	}
 	var wc wordCount = map[string]int{} // defined as a type to reduce copying
 	wc.scanFile(f, logger)
-	fmt.Println("top ten words:")
-	c := wc.top10(*wordLength)
+	fmt.Println("top", *topN, "words:")
+	c := wc.top(*topN, *wordLength, logger)
 	for _, p := range c {
 		fmt.Println(p.word, p.count)
 	}
